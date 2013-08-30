@@ -58,6 +58,11 @@ class MP_Gateway_EPay extends MP_Gateway_API
 		{
 			$this->epay_merchantnumber = $settings['gateways']['epay']['epay_merchantnumber'];
 			$this->epay_md5key = $settings['gateways']['epay']['epay_md5key'];
+			$this->epay_windowid = $settings['gateways']['epay']['epay_windowid'];
+			$this->epay_instantcapture = $settings['gateways']['epay']['epay_instantcapture'];
+			$this->epay_group = $settings['gateways']['epay']['epay_group'];
+			$this->epay_authmail = $settings['gateways']['epay']['epay_authmail'];
+			$this->epay_authsms = $settings['gateways']['epay']['epay_authsms'];
 		}
 	}
 	
@@ -181,8 +186,8 @@ class MP_Gateway_EPay extends MP_Gateway_API
 		{
 			$param_list[] = "{$k}=" . rawurlencode($v);
 		}
-		
-		$param_list[] = "hash=" . md5(implode("", array_values($params)) + $this->epay_md5key);
+
+		$param_list[] = "hash=" . md5(implode("", array_values($params)) . $this->epay_md5key);
 		
 		$param_str = implode('&', $param_list);
 		
