@@ -139,7 +139,7 @@ class MP_Gateway_EPay extends MP_Gateway_API
 		$params['mailreceipt'] = $this->epay_authmail;
 		$params['smsreceipt'] = $this->epay_authsms;
 		$params['orderid'] = $_SESSION['mp_order'];
-		$params['currency'] = $mp->get_setting('currency');
+		$params['currency'] = $settings['currency'];
 		$params['accepturl'] = mp_checkout_step_url('confirmation');
 		$params['cancelurl'] = mp_checkout_step_url('checkout') . '/?' . 'epay_cancel';
 		$params['callbackurl'] = $this->ipn_url;
@@ -166,14 +166,14 @@ class MP_Gateway_EPay extends MP_Gateway_API
 		//shipping line
 		if(($shipping_price = $mp->shipping_price()) !== false)
 		{
-			if($mp->get_setting('tax->tax_inclusive'))
+			if($settings['tax']['tax_inclusive'])
 				$shipping_price = $mp->shipping_tax_price($shipping_price);
 			
 			$total = $total + $shipping_price;
 		}
 		
 		//tax line if tax inclusive pricing is off. It it's on it would screw up the totals
-		if(!$mp->get_setting('tax->tax_inclusive') && ($tax_price = $mp->tax_price()) !== false)
+		if(!$settings['tax']['tax_inclusive'] && ($tax_price = $mp->tax_price()) !== false)
 		{
 			$total = $total + $tax_price;
 		}
@@ -239,6 +239,8 @@ class MP_Gateway_EPay extends MP_Gateway_API
 	{
 		global $mp;
 		
+		$settings = get_option('mp_settings');
+		
 		$timestamp = time();
 		$total = $_REQUEST['amount'] / 100;
 		
@@ -264,7 +266,7 @@ class MP_Gateway_EPay extends MP_Gateway_API
 			$payment_info['gateway_private_name'] = $this->admin_name;
 			$payment_info['status'][$timestamp] = __("Paid", 'mp');
 			$payment_info['total'] = $_GET['amount'] / 100;
-			$payment_info['currency'] = $mp->get_setting('currency');
+			$payment_info['currency'] = $settings['currency'];
 			$payment_info['transaction_id'] = $_GET['txnid'];
 			$payment_info['method'] = "Credit Card";
 			
